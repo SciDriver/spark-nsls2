@@ -1,1 +1,1 @@
-# spark-nsls2
+# SPARK-NSLS2
