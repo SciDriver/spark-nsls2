@@ -1,5 +1,5 @@
 
-1. Running spark jupyter
+1. Running spark with jupyter
 
 export PYSPARK_DRIVER_PYTHON='jupyter'
 export PYSPARK_DRIVER_PYTHON_OPTS='notebook --no-browser --port=7777'
