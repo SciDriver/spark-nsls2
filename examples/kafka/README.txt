@@ -1,5 +1,5 @@
-The composite end-to-end application that demonstrates the integration of
-the databroker interface, kafka and spark-mpi platforms for building
+The composite end-to-end application demonstrates the integration of
+the databroker interface, kafka, and spark-mpi platforms for building
 near-real-time beamline processing pipelines
 
 
@@ -10,7 +10,7 @@ zookeeper-server-start.sh zookeeper.properties &
 kafka-server-start.sh server.properties &
 kafka-topics.sh --list --zookeeper localhost:2181
 
-2. Run the Spark-Kafka consumer for processing datbaroker's frames
+2. Run the Spark-Kafka consumer for processing the databroker's frames
 with the Sharp-NSLS2 multi-GPU ptychographic application
 
 export PYSPARK_DRIVER_PYTHON='jupyter'
@@ -21,8 +21,8 @@ pyspark --master local[35]
 
 consumer.sharp.mpi.17554.ipynb
 
-3. Run (in the different terminal) the Kafka producer
-of datbaroker's frames and scan points
+3. Run (in a different terminal) the Kafka producer
+of the databroker's frames and scan points
 
 python producer.db2sharp.17554.py
 
