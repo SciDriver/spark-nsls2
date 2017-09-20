@@ -1,6 +1,6 @@
-The sharp-mpi compute-intensive application that demonstrates the acceleration of
-the ptychographic reconstruction approach with the MPI parallel framework.
-
+This demo demonstrates the MPI/GPU ptychographic reconstruction application
+resolving both the GPU memory and performance requirements of ptychographic
+experiments for processing large scans.
 
 1. Running spark with jupyter
 

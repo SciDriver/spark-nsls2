@@ -15,9 +15,8 @@ data-intensive application that demonstrates the acceleration
 of the databroker interface for accessing and preprocessing large ptychographic
 datasets with the Spark parallel platform
 
-* [sharp-mpi](https://github.com/SciDriver/spark-nsls2/blob/master/examples/sharp-mpi/sharp.mpi.17554.ipynb):
-compute-intensive application that demonstrates the acceleration
-of the ptychographic reconstruction approach with the MPI parallel framework
+* [sharp-mpi](https://github.com/SciDriver/spark-nsls2/blob/master/examples/sharp-mpi/sharp.mpi.17554.ipynb): MPI/GPU ptychographic reconstruction application resolving both the GPU memory and performance
+requirements of ptychographic experiments for processing large scans.
 
 * [kafka](https://github.com/SciDriver/spark-nsls2/tree/master/examples/kafka ):
 composite end-to-end application that demonstrates the integration
