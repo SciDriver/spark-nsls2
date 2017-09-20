@@ -1,3 +1,8 @@
+
+The dbsharp data-intensive application that demonstrates the acceleration of
+the databroker interface for accessing and preprocessing large ptychographic
+datasets with the spark parallel platform. 
+
 1. Running spark with jupyter
 
 export PYSPARK_DRIVER_PYTHON='jupyter'
