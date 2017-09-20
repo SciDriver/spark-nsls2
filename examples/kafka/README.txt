@@ -1,3 +1,7 @@
+The composite end-to-end application that demonstrates the integration of
+the databroker interface, kafka and spark-mpi platforms for building
+near-real-time beamline processing pipelines
+
 
 1. Start the Zookeeper server (port: 2181) and 
 the Kafka server (port: 9092), check topics

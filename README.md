@@ -2,7 +2,7 @@
 
 The Spark-MPI integrated application for accelerating the NSLS-II data-intensive and compute-intensive
 beamline tasks and building near-real-time processing pipelines. The rationale as well as general
-description of this approach are provided in the NYSDS'17 presentation: "[Building Near-Real-Time Processing Pipelines with the Spark-MPI platform]()", NYSDS, New York, August 7-9, 2017. The Spark-MPI approach is funded by
+description of this approach are provided in the NYSDS'17 presentation: "[Building Near-Real-Time Processing Pipelines with the Spark-MPI platform](https://github.com/SciDriver/spark-nsls2/blob/master/doc/Malitsky-Chaudhary-NYSDS17.pdf)", NYSDS, New York, August 7-9, 2017. The Spark-MPI approach is funded by
 the DOE ASCR SBIR grant.
 
 ## Conceptual Demo

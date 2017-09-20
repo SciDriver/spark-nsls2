@@ -1,3 +1,6 @@
+The sharp-mpi compute-intensive application that demonstrates the acceleration of
+the ptychographic reconstruction approach with the MPI parallel framework.
+
 
 1. Running spark with jupyter
 

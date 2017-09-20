@@ -1,5 +1,5 @@
 
-The dbsharp data-intensive application that demonstrates the acceleration of
+The db2sharp data-intensive application that demonstrates the acceleration of
 the databroker interface for accessing and preprocessing large ptychographic
 datasets with the spark parallel platform. 
 
