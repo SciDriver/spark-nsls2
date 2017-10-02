@@ -3,7 +3,9 @@ from datetime import datetime
 import numpy as np
 import h5py
 
-from databroker import get_table,db
+import databroker
+from databroker import list_configs
+from databroker import Broker
 
 class SharpReader:
 
@@ -11,6 +13,7 @@ class SharpReader:
 
       # frame parameters
 
+      self.db = Broker.named('demo')
       self.x_c =  60
       self.y_c =  66
       self.nx  = 100
@@ -27,7 +30,9 @@ class SharpReader:
         
    def get_merlin1_fnames(self, sid):
 
-      df  = db.get_table(db[sid],fill=False)
+      header = self.db[sid]
+      df  = self.db.get_table(header,fill=False)
+      
       fnames = df['merlin1'].as_matrix()
       ic = np.asarray(df['sclr1_ch4'])
     
@@ -35,7 +40,9 @@ class SharpReader:
 
    def get_points(self, sid, fields):
 
-      df  = db.get_table(db[sid],fill=False)
+      header = self.db[sid]
+      df  = self.db.get_table(header,fill=False)
+      
       x = np.array(df[fields[0]]) 
       y = np.array(df[fields[1]])
       return x,y
