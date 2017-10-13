@@ -1,65 +1,97 @@
+#!/usr/bin/env python
+
 from kafka import KafkaProducer
 
-from datetime import timedelta, datetime, tzinfo
+from datetime import datetime
 
 import numpy as np
+import matplotlib.pyplot as plt
+import h5py
+
 import pickle
 
-from SharpReader import SharpReader
+import databroker
+from databroker import list_configs
+from databroker import Broker
+from hxntools.handlers import register
 
-# Define the SharpReader experiment-specific parameters
+from SharpWriter import SharpWriter
 
-from SharpReader import SharpReader
+sid = 26
 
-sid = 17554
-fields = ['dssx','dssy']
+# print("databroker version: ", databroker.__version__)
+# print("configirations: ", list_configs())
+# select the demo configuration
+db = Broker.named('demo')
+register(db)
 
-sharpReader = SharpReader()
-# x_c, y_c, xn, yn, threshold
-sharpReader.init(60, 66, 100, 100, 2)
+# get the document header for the selected run
+header = db[17554]
 
-# Get metadata from databroker
+# Db2Sharp scan-related parameters
 
-print("getting fnames, points from db ...");
-t1 = datetime.now();
-fnames, ic = sharpReader.get_merlin1_fnames(sid)
-xs, ys = sharpReader.get_points(sid, fields)
-t2 = datetime.now();
-print ("processing time: ", (t2 - t1), ", fnames: ", len(fnames),
-       ", ic: ", len(ic), ", xs: ", len(xs), ", ys: ", len(ys));
+kvs = {}
 
-# Load files
+kvs['prb'] = '../../data/17554/recon_17554_t1_probe_ave_rp.npy'
 
-print("loading files ...");
-t1 = datetime.now();
-frames = sharpReader.load_files(sid, fnames, ic)
-t2 = datetime.now();
-print ("processing time: ", (t2 - t1), "frames: ", len(frames));
+kvs['pixel'] = 55 # pixel size (um)
+kvs['distance']  = 0.5 # (m)
+kvs['wavelength'] = 0.083 # (nm)
 
-# Send to Kafka
+# db fields, such as 'dssx', dssy', 'sclr1_ch4', 'merlin1'
 
-topic = "topic-d"
+kvs['x_c'] =  60
+kvs['y_c'] =  66
+kvs['dside'] = 100 # detector side
+kvs['threshold'] = 2
 
-n = 1000 # number of msgs (Kafka max msg size is 1 MB)
-ns = np.int(len(frames)/n)
+kvs['outdir'] = "../../files/"
 
+
+def to_sharp_bridge(header, kvs):
+    
+    nx = kvs['dside']
+    ny = nx
+    
+    x0 = np.int(kvs['x_c']-nx/2)
+    x1 = np.int(kvs['x_c']+nx/2)
+    y0 = np.int(kvs['y_c']-ny/2)
+    y1 = np.int(kvs['y_c']+ny/2)
+    
+    xs = []; ys = []; ics = []; ts = []; frames = []
+    
+    for ev in header.events(fill=True):
+        xs.append(ev['data']['dssx'])
+        ys.append(ev['data']['dssy'])
+        ics.append(ev['data']['sclr1_ch4'])
+        frame = 1.*np.fliplr(np.squeeze(np.asarray(ev['data']['merlin1'])).T)
+        ts.append(frame)
+        
+    for i in range(0, len(ts)):
+        tmp = ts[i] * ics[0] / ics[i]
+        tmp = tmp[x0:x1, y0:y1]
+        tmp[tmp <= kvs['threshold']] = 0.
+        frames.append(tmp)
+        
+    sharpWriter = SharpWriter()
+    sharpWriter.init(kvs['pixel'], kvs['distance'], kvs['wavelength'], kvs['dside']) 
+    
+    cxifile = kvs['outdir'] + "hxn" + str(kvs['sid']) + ".cxi"
+    sharpWriter.write(cxifile, kvs['prb'], frames, np.asarray(xs), np.asarray(ys))
+
+    return cxifile
+
+print("getting and writing events...");
+
+topic = "topic-a"
 producer = KafkaProducer(bootstrap_servers=['localhost:9092'])
 
-print("sending frames and scan points to Kafka ...");
-t1 = datetime.now();
-
-producer.send(topic, pickle.dumps([n]))
-
-for i in range(0, n):
-    n1 = i*ns
-    n2 = (i+1)*ns
-    msg = pickle.dumps([i, frames[n1:n2], xs[n1:n2], ys[n1:n2]])
-    producer.send(topic, msg)
-
+kvs['sid'] = sid
+t1 = datetime.now();   
+cxifile = to_sharp_bridge(header, kvs)
+cxifile = kvs['outdir'] + "hxn" + str(kvs['sid']) + ".cxi"
+producer.send(topic, pickle.dumps(cxifile))
 t2 = datetime.now();
-print ("processing time: ", (t2 - t1))
-
-
-
+print ("processing time: ", (t2 - t1), cxifile);
 
 
